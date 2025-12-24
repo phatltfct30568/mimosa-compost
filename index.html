@@ -2,213 +2,276 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mimosa Compost — Demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mimosa Compost — Live Demo</title>
+  <meta name="description" content="Giám sát thùng ủ phân & cây trồng theo thời gian thực. Bấm 1 nút để truy cập dashboard live."/>
   <style>
     :root{
-      --bg:#070B12; --card:#0B1220; --card2:#0E1830; --line:#1b2a4a;
-      --text:#e9f1ff; --muted:#9fb2d5; --accent:#3b82f6; --ok:#22c55e; --bad:#ef4444;
-      --radius:18px;
+      --bg:#070B12; --panel:rgba(255,255,255,.06); --panel2:rgba(255,255,255,.08);
+      --stroke:rgba(255,255,255,.10); --text:rgba(255,255,255,.92); --muted:rgba(255,255,255,.68);
+      --brand:#3b82f6; --ok:#22c55e; --bad:#ef4444; --warn:#f59e0b;
+      --radius:22px;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--text);
+      margin:0; min-height:100vh; color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
       background:
-        radial-gradient(900px 500px at 20% 0%, rgba(59,130,246,.20), transparent 60%),
-        radial-gradient(900px 500px at 80% 0%, rgba(34,197,94,.12), transparent 55%),
+        radial-gradient(900px 500px at 18% 0%, rgba(59,130,246,.22), transparent 60%),
+        radial-gradient(900px 500px at 85% 10%, rgba(34,197,94,.14), transparent 55%),
         radial-gradient(700px 500px at 50% 100%, rgba(99,102,241,.10), transparent 60%),
         var(--bg);
-      min-height:100vh;
     }
-    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 60px}
-    .top{
-      display:flex;align-items:center;gap:10px;
-      padding:14px 18px;border:1px solid var(--line);
-      border-radius:999px;background:rgba(11,18,32,.75);
-      backdrop-filter: blur(10px);
-      width:fit-content;
+    .nav{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom, rgba(7,11,18,.90), rgba(7,11,18,.55));
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 18px rgba(59,130,246,.8)}
-    h1{font-size:44px;line-height:1.08;margin:22px 0 10px}
-    p{margin:0;color:var(--muted);font-size:16px;line-height:1.6}
-    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:22px}
-    @media (max-width:900px){ .grid{grid-template-columns:1fr} h1{font-size:34px} }
+    .navin{max-width:980px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:.2px}
+    .dot{width:10px;height:10px;border-radius:999px;background:linear-gradient(135deg,#22c55e,#3b82f6);box-shadow:0 0 0 4px rgba(34,197,94,.13)}
+    .wrap{max-width:980px;margin:0 auto;padding:26px 16px 60px}
+    h1{margin:18px 0 8px;font-size:42px;line-height:1.07;letter-spacing:-.7px}
+    @media(max-width:520px){h1{font-size:32px}}
+    p{margin:0;color:var(--muted);line-height:1.65}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:18px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
     .card{
-      border:1px solid var(--line);
-      background:rgba(11,18,32,.80);
-      border-radius:var(--radius);
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, var(--panel2), var(--panel));
+      border-radius: var(--radius);
       padding:18px;
-      box-shadow:0 20px 60px rgba(0,0,0,.35);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+      backdrop-filter: blur(12px);
     }
-    .card h2{margin:0 0 10px;font-size:18px}
-    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .btn{
-      appearance:none;border:1px solid rgba(255,255,255,.10);
-      background:rgba(59,130,246,.95);
-      color:white; font-weight:700;
-      padding:12px 14px;border-radius:14px;
-      cursor:pointer; text-decoration:none;
+    .kicker{
       display:inline-flex;align-items:center;gap:10px;
-      transition: transform .08s ease, filter .12s ease;
+      padding:8px 12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);font-weight:700;font-size:13px;
+      margin-top:6px;
     }
-    .btn:hover{filter:brightness(1.05)}
-    .btn:active{transform:translateY(1px)}
-    .btn.ghost{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:var(--text)}
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:10px 12px;border-radius:999px;
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      color:var(--muted);
-      font-size:13px;
-    }
-    .status{display:flex;align-items:center;gap:10px;margin-top:12px}
-    .badge{
-      padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
+      background: rgba(59,130,246,.95);
+      color:#fff;font-weight:800;
+      padding:12px 14px;border-radius:16px;
+      cursor:pointer;text-decoration:none;
+      transition: transform .08s ease, filter .12s ease;
+      user-select:none;
     }
-    .badge.ok{color:var(--ok);border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.08)}
-    .badge.bad{color:var(--bad);border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08)}
-    code{background:rgba(255,255,255,.06);padding:3px 6px;border-radius:8px;border:1px solid rgba(255,255,255,.08)}
-    .small{font-size:13px;color:var(--muted)}
-    .qr{
-      display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-top:12px
+    .btn:hover{filter:brightness(1.06)}
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{background:rgba(255,255,255,.06);color:var(--text)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .status{
+      margin-top:14px;
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+      padding:12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
     }
-    img{border-radius:14px;border:1px solid rgba(255,255,255,.12)}
+    .badge{
+      padding:6px 10px;border-radius:999px;font-size:12px;font-weight:900;
+      border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06);
+    }
+    .ok{color:var(--ok);border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.08)}
+    .bad{color:var(--bad);border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08)}
+    .warn{color:var(--warn);border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.08)}
     .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    .small{font-size:13px;color:rgba(255,255,255,.62)}
+    .qrbox{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-top:10px}
+    img{border-radius:16px;border:1px solid rgba(255,255,255,.12)}
+    footer{margin-top:18px;text-align:center;color:rgba(255,255,255,.55);font-size:13px}
+    .hide{display:none !important}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top"><span class="dot"></span><strong>Mimosa Compost</strong><span class="small">· Demo Dashboard</span></div>
+  <div class="nav">
+    <div class="navin">
+      <div class="brand"><span class="dot"></span> Mimosa Compost</div>
+      <div class="small">Live demo for judges</div>
+    </div>
+  </div>
 
-    <h1>Giám sát ủ phân & cây trồng<br/>trên web thời gian thực</h1>
+  <div class="wrap">
+    <div class="kicker">Compost & Plant Monitoring • Real-time • Alerts • AI</div>
+    <h1>Giám sát ủ phân & cây trồng<br/>chỉ với 1 nút truy cập.</h1>
     <p>
-      Landing page cho ban giám khảo: bấm 1 nút để vào dashboard live (Cloudflare Tunnel).
-      Link live được đọc tự động từ <code class="mono">live.json</code>.
+      Ban giám khảo quét QR → vào trang này → bấm “Truy cập Dashboard”.
+      Trang sẽ tự lấy link live từ <span class="mono">live.json</span> và kiểm tra trạng thái Online/Offline.
     </p>
 
     <div class="grid">
       <div class="card">
-        <h2>Truy cập nhanh</h2>
+        <h2 style="margin:0 0 8px;font-size:18px">Truy cập Dashboard</h2>
+
         <div class="status">
-          <span class="badge" id="badge">Đang tải…</span>
-          <span class="small">Dashboard URL: <span class="mono" id="liveText">—</span></span>
+          <span class="badge warn" id="liveState">Đang tải link…</span>
+          <span class="small">Live URL:</span>
+          <span class="mono small" id="liveUrl">—</span>
         </div>
 
         <div class="row">
           <button class="btn" id="goBtn">🚀 Truy cập Dashboard</button>
-          <button class="btn ghost" id="copyBtn">📋 Copy link</button>
-          <a class="btn ghost" id="openJson" target="_blank" rel="noopener">🧾 Mở live.json</a>
+          <button class="btn secondary" id="retryBtn">🔄 Kiểm tra lại</button>
         </div>
 
-        <div style="margin-top:14px" class="small">
-          Mỗi lần bạn chạy tunnel ra link mới → chỉ cần sửa <code class="mono">live.json</code> và Commit.
-          Giám khảo vẫn vào 1 link GitHub Pages duy nhất.
+        <div class="small" style="margin-top:10px">
+          Nếu trạng thái Offline: thường do tunnel chưa chạy / server Flask chưa mở / link live chưa cập nhật.
         </div>
 
-        <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:16px 0">
-
-        <h2>Checklist demo (gợi ý)</h2>
-        <div class="pill">✅ Sensor → gửi về server (ingest)</div>
-        <div class="pill">✅ Dashboard hiển thị temp / humidity / soil</div>
-        <div class="pill">✅ Alerts & gợi ý xử lý</div>
-        <div class="pill">✅ Leaf measurement + chatbot</div>
+        <!-- KHU KỸ THUẬT (ẩn mặc định) -->
+        <div id="tech" class="hide" style="margin-top:14px">
+          <div class="status">
+            <span class="badge" id="rawBadge">Tech</span>
+            <span class="small">Bạn (owner) có thể copy link để debug:</span>
+            <button class="btn secondary" id="copyBtn">📋 Copy live</button>
+            <a class="btn secondary" id="openJson" target="_blank" rel="noopener">🧾 Mở live.json</a>
+          </div>
+        </div>
       </div>
 
       <div class="card">
-        <h2>QR cho giám khảo</h2>
-        <p class="small">
-          Quét QR để vào landing GitHub Pages của bạn (không đổi).
-        </p>
-
-        <div class="qr">
-          <img id="qrImg" width="220" height="220" alt="QR GitHub Pages">
-          <div>
-            <div class="small">Link landing:</div>
-            <div class="mono" id="pagesUrl" style="word-break:break-all;margin-top:6px"></div>
+        <h2 style="margin:0 0 8px;font-size:18px">QR cố định</h2>
+        <p class="small">QR này trỏ về landing GitHub Pages (không đổi). Dashboard live sẽ đổi nhưng bạn chỉ cần cập nhật live.json.</p>
+        <div class="qrbox">
+          <img id="qrImg" width="220" height="220" alt="QR Landing">
+          <div style="min-width:240px">
+            <div class="small">Landing URL:</div>
+            <div class="mono small" id="pagesUrl" style="word-break:break-all;margin-top:6px"></div>
             <div class="row" style="margin-top:10px">
-              <button class="btn ghost" id="copyPagesBtn">📋 Copy landing</button>
+              <button class="btn secondary" id="copyPagesBtn">📋 Copy landing</button>
             </div>
-
-            <div style="margin-top:12px" class="small">
-              Tip: In QR này lên poster/slide. Giám khảo quét → bấm “Truy cập Dashboard”.
+            <div class="small" style="margin-top:10px">
+              In QR này lên poster/slide. Giám khảo quét → bấm “Truy cập Dashboard”.
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <footer>© <span id="y"></span> Mimosa Compost — Prototype</footer>
   </div>
 
 <script>
+  // ==== cấu hình ====
   const LIVE_JSON = "./live.json";
+  const PING_TIMEOUT_MS = 2200;
+
   let LIVE_URL = "";
 
-  function setStatus(ok, text){
-    const b = document.getElementById("badge");
+  function setBadge(kind, text){
+    const b = document.getElementById("liveState");
+    b.classList.remove("ok","bad","warn");
+    b.classList.add(kind);
     b.textContent = text;
-    b.classList.remove("ok","bad");
-    b.classList.add(ok ? "ok":"bad");
   }
 
-  async function loadLive(){
+  async function loadLiveUrl(){
+    setBadge("warn", "Đang tải link…");
     try{
-      // cache-bust để luôn lấy bản mới
       const r = await fetch(LIVE_JSON + "?ts=" + Date.now(), {cache:"no-store"});
       if(!r.ok) throw new Error("HTTP " + r.status);
       const j = await r.json();
       if(!j.live || typeof j.live !== "string") throw new Error("live.json thiếu field live");
       LIVE_URL = j.live.trim();
-      document.getElementById("liveText").textContent = LIVE_URL;
-      setStatus(true, "Sẵn sàng");
+      document.getElementById("liveUrl").textContent = LIVE_URL;
       document.getElementById("openJson").href = LIVE_JSON;
+      return LIVE_URL;
     }catch(e){
       LIVE_URL = "";
-      document.getElementById("liveText").textContent = "Không đọc được live.json";
-      setStatus(false, "Lỗi");
-      document.getElementById("openJson").href = LIVE_JSON;
+      document.getElementById("liveUrl").textContent = "Không đọc được live.json";
+      setBadge("bad", "Lỗi live.json");
       console.error(e);
+      return "";
+    }
+  }
+
+  // Ping dashboard live (CORS-safe):
+  // - Dùng <img> để kiểm tra "có phản hồi hay không" mà không cần CORS.
+  // - Dẫn tới /api/latest (thường trả JSON) => img onload có thể fail,
+  //   nên ta ping bằng GET / (trang chủ) là an toàn hơn.
+  function pingLive(url){
+    return new Promise((resolve) => {
+      if(!url) return resolve(false);
+
+      const img = new Image();
+      let done = false;
+
+      const timer = setTimeout(() => {
+        if(done) return;
+        done = true;
+        resolve(false);
+      }, PING_TIMEOUT_MS);
+
+      img.onload = () => { if(done) return; done=true; clearTimeout(timer); resolve(true); };
+      img.onerror = () => { if(done) return; done=true; clearTimeout(timer); resolve(false); };
+
+      // ping URL root + cache bust
+      const u = url.replace(/\/+$/,"") + "/?ping=" + Date.now();
+      img.src = u;
+    });
+  }
+
+  async function refreshStatus(){
+    const url = await loadLiveUrl();
+    if(!url) return;
+
+    setBadge("warn", "Đang kiểm tra…");
+    const ok = await pingLive(url);
+
+    if(ok){
+      setBadge("ok", "Online ✓");
+    }else{
+      setBadge("bad", "Offline ✕");
     }
   }
 
   function openLive(){
     if(!LIVE_URL){
-      alert("Chưa có LIVE URL. Hãy kiểm tra live.json (field live).");
+      alert("Chưa có LIVE URL. Hãy kiểm tra live.json.");
       return;
     }
-    window.open(LIVE_URL, "_blank");
+    window.open(LIVE_URL, "_blank", "noopener");
   }
 
   async function copy(text){
-    try{
-      await navigator.clipboard.writeText(text);
-      alert("Đã copy!");
-    }catch(e){
-      prompt("Copy thủ công:", text);
-    }
+    try{ await navigator.clipboard.writeText(text); }
+    catch(e){ prompt("Copy thủ công:", text); }
   }
 
-  // QR cho landing pages URL hiện tại
-  function setupPagesQR(){
+  function setupQR(){
     const pages = window.location.href.replace(/#.*$/,"");
     document.getElementById("pagesUrl").textContent = pages;
+
+    // QR API public (đủ dùng demo)
     const qr = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(pages);
     document.getElementById("qrImg").src = qr;
+
     document.getElementById("copyPagesBtn").onclick = ()=>copy(pages);
   }
 
+  // ==== events ====
   document.getElementById("goBtn").onclick = openLive;
-  document.getElementById("copyBtn").onclick = ()=> {
-    if(!LIVE_URL) return alert("Chưa có LIVE URL để copy.");
-    copy(LIVE_URL);
-  };
+  document.getElementById("retryBtn").onclick = refreshStatus;
+  document.getElementById("copyBtn").onclick = ()=> { if(LIVE_URL) copy(LIVE_URL); };
 
-  setupPagesQR();
-  loadLive();
+  // ==== init ====
+  document.getElementById("y").textContent = new Date().getFullYear();
+  setupQR();
+  refreshStatus();
+
+  // Auto refresh nhẹ mỗi 20s (để nếu bạn vừa cập nhật live.json, nó tự báo Online)
+  setInterval(refreshStatus, 20000);
+
+  // Optional: bật khu kỹ thuật bằng cách thêm ?tech=1 vào URL
+  if(new URLSearchParams(location.search).get("tech") === "1"){
+    document.getElementById("tech").classList.remove("hide");
+  }
 </script>
 </body>
 </html>
