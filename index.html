@@ -2,24 +2,456 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8" />
-  <title>Mimosa Compost — Redirect</title>
-
-  <!-- SỬA LINK Ở ĐÂY MỖI LẦN CLOUDFLARE ĐỔI -->
-  <meta https://tulsa-starsmerchant-bedrooms-tourism.trycloudflare.com/">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mimosa Compost — Compost & Plant Monitoring</title>
+  <meta name="description" content="Giám sát thùng ủ phân & dàn trồng cây theo thời gian thực, cảnh báo thông minh và gợi ý xử lý." />
   <style>
-    body{font-family:system-ui,Segoe UI,Arial;margin:24px;max-width:720px}
-    .card{border:1px solid #ddd;border-radius:14px;padding:14px}
-    a{word-break:break-all}
+    :root{
+      --bg:#05070d;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.09);
+      --stroke:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.70);
+      --muted2:rgba(255,255,255,.55);
+      --brand:#43d17a;
+      --brand2:#35a6ff;
+      --danger:#ff4d4d;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 10% 10%, rgba(67,209,122,.18), transparent 55%),
+        radial-gradient(900px 700px at 90% 20%, rgba(53,166,255,.18), transparent 50%),
+        radial-gradient(1200px 900px at 60% 120%, rgba(255,255,255,.06), transparent 50%),
+        var(--bg);
+      overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:1100px; margin:0 auto; padding:22px 18px 70px}
+    .nav{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(to bottom, rgba(5,7,13,.86), rgba(5,7,13,.55));
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .nav .inner{max-width:1100px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .brand{
+      display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px;
+    }
+    .dot{
+      width:11px; height:11px; border-radius:99px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: 0 0 0 4px rgba(67,209,122,.13);
+    }
+    .navlinks{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    .chip{
+      padding:9px 12px; border:1px solid var(--stroke);
+      border-radius:999px; background:rgba(255,255,255,.04);
+      color:var(--muted); font-weight:650; font-size:14px;
+      transition:.18s ease;
+    }
+    .chip:hover{transform:translateY(-1px); background:rgba(255,255,255,.07); color:var(--text)}
+    .chip.primary{
+      border-color:rgba(67,209,122,.35);
+      background:linear-gradient(135deg, rgba(67,209,122,.18), rgba(53,166,255,.16));
+      color:var(--text);
+    }
+
+    .hero{
+      padding:34px 0 18px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    @media (max-width: 920px){
+      .hero{grid-template-columns:1fr; padding-top:24px}
+    }
+    .card{
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .heroLeft{padding:26px 24px}
+    .kicker{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      font-weight:650; font-size:14px;
+    }
+    .kdot{width:7px;height:7px;border-radius:999px;background:var(--brand)}
+    h1{
+      margin:14px 0 10px;
+      font-size:44px; line-height:1.05;
+      letter-spacing:-.8px;
+    }
+    @media (max-width:520px){ h1{font-size:34px} }
+    .lead{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:16.5px;
+      line-height:1.55;
+      max-width:58ch;
+    }
+    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-weight:750;
+      cursor:pointer;
+      transition:.18s ease;
+      user-select:none;
+    }
+    .btn:hover{transform:translateY(-1px); background:rgba(255,255,255,.08)}
+    .btn.primary{
+      border-color:rgba(67,209,122,.45);
+      background: linear-gradient(135deg, rgba(67,209,122,.28), rgba(53,166,255,.22));
+    }
+    .btn.danger{
+      border-color:rgba(255,77,77,.40);
+      background: linear-gradient(135deg, rgba(255,77,77,.22), rgba(255,255,255,.06));
+    }
+    .icon{
+      width:18px; height:18px; display:inline-block;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+    }
+    .note{
+      margin-top:14px;
+      color:var(--muted2);
+      font-size:13.5px;
+      line-height:1.45;
+    }
+
+    .heroRight{padding:22px}
+    .panelTitle{font-weight:850; margin:0 0 10px; letter-spacing:.2px}
+    .field{
+      display:flex; gap:10px; flex-wrap:wrap;
+      padding:12px; border:1px solid rgba(255,255,255,.12);
+      border-radius:18px; background:rgba(0,0,0,.14);
+    }
+    input{
+      flex:1;
+      min-width:220px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    input::placeholder{color:rgba(255,255,255,.45)}
+    .mini{
+      margin-top:10px;
+      font-size:13.5px;
+      color:var(--muted2);
+      line-height:1.45;
+    }
+    .saved{
+      margin-top:10px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:13.5px;
+      word-break:break-all;
+    }
+
+    .grid3{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+    }
+    @media (max-width: 920px){ .grid3{grid-template-columns:1fr} }
+    .feat{padding:16px 16px 14px}
+    .feat h3{margin:8px 0 6px; font-size:16px}
+    .feat p{margin:0; color:var(--muted); font-size:14px; line-height:1.55}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:13px; font-weight:700;
+    }
+    .b1{background:rgba(67,209,122,.10); border-color:rgba(67,209,122,.25)}
+    .b2{background:rgba(53,166,255,.10); border-color:rgba(53,166,255,.25)}
+    .b3{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.14)}
+
+    .section{
+      margin-top:18px;
+      padding:20px;
+    }
+    .section h2{
+      margin:0 0 8px;
+      font-size:22px;
+      letter-spacing:-.2px;
+    }
+    .section p{margin:0; color:var(--muted); line-height:1.65}
+    .steps{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width:920px){ .steps{grid-template-columns:1fr} }
+    .step{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+    }
+    .step b{display:block; margin-bottom:6px}
+    .footer{
+      margin-top:18px;
+      padding:18px;
+      text-align:center;
+      color:var(--muted2);
+      font-size:13px;
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(0,0,0,.62);
+      border:1px solid rgba(255,255,255,.12);
+      padding:10px 12px;
+      border-radius:999px;
+      color:rgba(255,255,255,.86);
+      font-size:13.5px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+      display:none;
+      max-width:min(720px, 92vw);
+    }
   </style>
 </head>
 <body>
-  <h2>Mimosa Compost</h2>
-  <div class="card">
-    <p>Đang chuyển hướng tới web demo…</p>
-    <p>Nếu không tự chuyển, bấm vào đây:</p>
-    <p><a href="https://XXXXX.trycloudflare.com">Mở web</a></p>
+  <div class="nav">
+    <div class="inner">
+      <div class="brand">
+        <span class="dot"></span>
+        <span>Mimosa Compost</span>
+      </div>
+      <div class="navlinks">
+        <a class="chip" href="#features">Tính năng</a>
+        <a class="chip" href="#how">Cách dùng</a>
+        <a class="chip" href="#demo">Demo</a>
+        <a class="chip primary" href="#open">Mở Dashboard</a>
+      </div>
+    </div>
   </div>
+
+  <div class="wrap">
+    <div class="hero">
+      <div class="card heroLeft">
+        <div class="kicker"><span class="kdot"></span> Compost & Plant Monitoring • Real-time • Alerts • AI assistant</div>
+        <h1>Giám sát thùng ủ phân & dàn trồng cây<br/>như một sản phẩm thật.</h1>
+        <p class="lead">
+          Theo dõi nhiệt độ, độ ẩm, độ ẩm đất/khối ủ theo thời gian thực, lịch sử dữ liệu + biểu đồ,
+          cảnh báo khi bất thường và gợi ý xử lý. Có thể mở trên điện thoại cho ban giám khảo quét QR.
+        </p>
+        <div class="row">
+          <a class="btn primary" href="#open" title="Mở Dashboard">
+            <span class="icon">🚀</span> Mở Dashboard
+          </a>
+          <a class="btn" href="#demo" title="Xem demo / hướng dẫn">
+            <span class="icon">🧪</span> Xem demo
+          </a>
+          <button class="btn danger" onclick="resetSavedUrl()" title="Xóa link đã lưu">
+            <span class="icon">🧹</span> Xóa link đã lưu
+          </button>
+        </div>
+        <div class="note">
+          Mẹo: QR nên trỏ về trang này (link GitHub Pages). Khi bạn chạy Cloudflare Tunnel, chỉ cần cập nhật “Dashboard URL” ở bên phải là xong.
+        </div>
+      </div>
+
+      <div class="card heroRight" id="open">
+        <h3 class="panelTitle">Mở Dashboard (Live)</h3>
+        <div class="field">
+          <input id="dashUrl" placeholder="Dán link Dashboard (ví dụ https://xxxx.trycloudflare.com)" />
+          <button class="btn primary" onclick="saveUrl()">Lưu</button>
+          <button class="btn" onclick="openUrl()">Mở</button>
+        </div>
+        <div class="mini">
+          Nếu bạn đang dùng Cloudflare Tunnel “quick tunnel”, link sẽ thay đổi mỗi lần chạy.
+          Trang này giúp bạn “giữ QR cố định”, còn link live chỉ cần dán lại.
+        </div>
+        <div class="saved" id="savedBox">Chưa lưu Dashboard URL.</div>
+
+        <div class="grid3" style="margin-top:14px">
+          <div class="card feat" style="box-shadow:none">
+            <span class="badge b1">⚠️ Alerts</span>
+            <h3>Cảnh báo thông minh</h3>
+            <p>Tự phát hiện quá khô/quá ướt/nhiệt quá cao và đưa ra gợi ý xử lý theo rule/AI.</p>
+          </div>
+          <div class="card feat" style="box-shadow:none">
+            <span class="badge b2">📈 History</span>
+            <h3>Lịch sử & biểu đồ</h3>
+            <p>Lưu data theo thời gian (YYYY-MM-DD HH:MM:SS), xuất CSV cho báo cáo.</p>
+          </div>
+          <div class="card feat" style="box-shadow:none">
+            <span class="badge b3">🧠 AI</span>
+            <h3>Chatbot hỗ trợ</h3>
+            <p>Người dùng hỏi “mùi hôi”, “đảo bao lâu”, “pH thấp” → bot gợi ý xử lý.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card section" id="features">
+      <h2>Tính năng nổi bật</h2>
+      <p>
+        Thiết kế theo hướng sản phẩm: mỗi tài khoản có nhiều hệ thống, mỗi hệ thống có nhiều thùng ủ/sensor,
+        dữ liệu real-time + lịch sử, xuất báo cáo.
+      </p>
+      <div class="steps">
+        <div class="step">
+          <b>✅ Real-time dashboard</b>
+          Polling / streaming, hiển thị số đo tức thời + trạng thái thùng ủ.
+        </div>
+        <div class="step">
+          <b>✅ Multi-bin / Multi-system</b>
+          Chuyển đổi giữa các thùng ủ trong cùng một tài khoản.
+        </div>
+        <div class="step">
+          <b>✅ Export CSV</b>
+          Tải dữ liệu theo khoảng thời gian để đưa vào Excel/Google Sheets.
+        </div>
+        <div class="step">
+          <b>✅ Leaf measurement (camera)</b>
+          Bấm “Đo” trên web → chụp ảnh/đo độ rộng lá → trả kết quả + phân tích.
+        </div>
+      </div>
+    </div>
+
+    <div class="card section" id="how">
+      <h2>Cách dùng trong ngày demo (siêu nhanh)</h2>
+      <p>1) Chạy web server + tunnel trên laptop → 2) Dán link tunnel vào ô “Dashboard URL” → 3) QR quét vào trang này → bấm “Mở”.</p>
+      <div class="steps">
+        <div class="step">
+          <b>Bước 1 — Chạy web của bạn</b>
+          Mở server Flask trên máy (port 5000).
+        </div>
+        <div class="step">
+          <b>Bước 2 — Chạy Cloudflare Tunnel</b>
+          <span style="color:rgba(255,255,255,.85)">cloudflared tunnel --url http://127.0.0.1:5000</span>
+        </div>
+        <div class="step">
+          <b>Bước 3 — Copy link https://....trycloudflare.com</b>
+          Dán vào ô ở trên và bấm <b>Lưu</b>.
+        </div>
+        <div class="step">
+          <b>Bước 4 — Ban giám khảo quét QR</b>
+          QR trỏ về GitHub Pages (cố định), từ đó mở dashboard live.
+        </div>
+      </div>
+    </div>
+
+    <div class="card section" id="demo">
+      <h2>Demo / tài liệu</h2>
+      <p>
+        Bạn có thể thêm ảnh demo, video, sơ đồ khối, hoặc nút “Readme” ở đây.
+        (Muốn mình làm thêm “gallery + video embed + team info + tech stack” cũng được.)
+      </p>
+      <div class="row" style="margin-top:12px">
+        <a class="btn" href="https://github.com/phatltfct30568/mimosa-compost" target="_blank" rel="noreferrer">
+          <span class="icon">📦</span> Repo GitHub
+        </a>
+        <button class="btn" onclick="copyPageUrl()">
+          <span class="icon">🔗</span> Copy link trang này
+        </button>
+      </div>
+    </div>
+
+    <div class="footer">
+      © <span id="y"></span> Mimosa Compost — Prototype for STEM/IoT/AI project.
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const KEY = "mimosa_dashboard_url";
+    const box = document.getElementById("savedBox");
+    const inp = document.getElementById("dashUrl");
+
+    function toast(msg){
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.style.display = "block";
+      clearTimeout(window.__t);
+      window.__t = setTimeout(()=> t.style.display="none", 2400);
+    }
+
+    function normalize(u){
+      u = (u||"").trim();
+      if(!u) return "";
+      if(!/^https?:\/\//i.test(u)) u = "https://" + u;
+      return u;
+    }
+
+    function loadSaved(){
+      const v = localStorage.getItem(KEY) || "";
+      if(v){
+        box.textContent = "Đã lưu: " + v;
+        inp.value = v;
+      }else{
+        box.textContent = "Chưa lưu Dashboard URL.";
+      }
+    }
+
+    function saveUrl(){
+      const v = normalize(inp.value);
+      if(!v){ toast("Bạn chưa dán link Dashboard."); return; }
+      localStorage.setItem(KEY, v);
+      loadSaved();
+      toast("Đã lưu Dashboard URL ✅");
+    }
+
+    function openUrl(){
+      const v = normalize(inp.value) || localStorage.getItem(KEY) || "";
+      if(!v){ toast("Chưa có link để mở."); return; }
+      window.open(v, "_blank");
+    }
+
+    function resetSavedUrl(){
+      localStorage.removeItem(KEY);
+      inp.value = "";
+      loadSaved();
+      toast("Đã xóa link đã lưu.");
+    }
+
+    async function copyPageUrl(){
+      try{
+        await navigator.clipboard.writeText(location.href);
+        toast("Đã copy link trang này.");
+      }catch(e){
+        toast("Không copy được (trình duyệt chặn).");
+      }
+    }
+
+    document.getElementById("y").textContent = new Date().getFullYear();
+    loadSaved();
+  </script>
 </body>
 </html>
